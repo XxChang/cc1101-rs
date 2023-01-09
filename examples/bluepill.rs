@@ -71,10 +71,32 @@ fn main() -> ! {
 
     rprintln!("Hello world!") ;
 
-    let mut cc1101 = CC1101::new(spi, cs, delay).unwrap() ;
+    let cfg = cc1101_rs::Config::default() ;
+    let mut cc1101 = CC1101::new(spi, cs, delay, &cfg).unwrap() ;
     let (part, version) = cc1101.info().unwrap() ;
 
     rprintln!("part number: {}, version: {}", part, version) ;
-    
+
+    let fifo_thr = cc1101.get_fifo_thr().unwrap() ;
+    rprintln!("fifo thr: {:?}", fifo_thr) ;
+
+    let base_freq = cc1101.get_base_frequency().unwrap() ;
+    rprintln!("base frequency: {}", base_freq);
+
+    let chanspc = cc1101.get_chanspc().unwrap() as u64 ;
+    rprintln!("chanspc: {}", chanspc);
+
+    let chan = cc1101.get_chan().unwrap() ;
+    rprintln!("chan: {}", chan);
+
+    let pkt_cfg0 = cc1101.get_pkt().unwrap() ;
+    rprintln!("PKT_CFG0: {:02x}", pkt_cfg0) ;
+
+    let pkt_cfg0 = cc1101.get_pkt().unwrap() ;
+    rprintln!("PKT_CFG0: {:02x}", pkt_cfg0) ;
+
+    let (chanbw_e, chanbw_m, drate_e, drate_m) = cc1101.get_modem().unwrap() ;
+    rprintln!("chanbw_e: {:02b}, chanbw_m: {:02b}, drate_e: {:04b}, drate_m: {:02x}", chanbw_e, chanbw_m, drate_e, drate_m) ;
+
     loop {}
 }
