@@ -28,50 +28,6 @@ pub const MODE: Mode = Mode {
     polarity: Polarity::IdleHigh,
 };
 
-// use stm32f1xx_hal as hal;
-
-fn setup() -> (
-    Spi<SPI1, Spi1NoRemap, impl Pins<Spi1NoRemap>, u8>,
-    PA4<Output<PushPull>>,
-    SysDelay,
-    PC13<Output<PushPull>>,
-    PA8<Input<PullUp>>,
-) {
-    let dp = Peripherals::take().unwrap();
-    let cp = cortex_m::Peripherals::take().unwrap();
-
-    let mut flash = dp.FLASH.constrain();
-    let rcc = dp.RCC.constrain();
-
-    let clocks = rcc.cfgr.freeze(&mut flash.acr);
-
-    let mut afio = dp.AFIO.constrain();
-    let mut gpioa = dp.GPIOA.split();
-    let mut gpioc = dp.GPIOC.split() ;
-
-    let led = gpioc.pc13.into_push_pull_output(&mut gpioc.crh) ;
-
-    // SPI1
-    let sck = gpioa.pa5.into_alternate_push_pull(&mut gpioa.crl);
-    let miso = gpioa.pa6;
-    let mosi = gpioa.pa7.into_alternate_push_pull(&mut gpioa.crl);
-    let cs = gpioa.pa4.into_push_pull_output(&mut gpioa.crl);
-    let gd0 = gpioa.pa8.into_pull_up_input(&mut gpioa.crh);
-
-    let delay = cp.SYST.delay(&clocks) ;
-
-    let spi = Spi::spi1(
-        dp.SPI1,
-        (sck, miso, mosi),
-        &mut afio.mapr,
-        MODE,
-        1.MHz(),
-        clocks,
-    );
-
-    (spi, cs, delay, led, gd0)
-}
-
 #[entry]
 fn main() -> ! {
     rtt_init_print!() ;
@@ -136,4 +92,46 @@ fn main() -> ! {
             rprintln!("{:?}", &buff[..len.0]);
         }
     }
+}
+
+fn setup() -> (
+    Spi<SPI1, Spi1NoRemap, impl Pins<Spi1NoRemap>, u8>,
+    PA4<Output<PushPull>>,
+    SysDelay,
+    PC13<Output<PushPull>>,
+    PA8<Input<PullUp>>,
+) {
+    let dp = Peripherals::take().unwrap();
+    let cp = cortex_m::Peripherals::take().unwrap();
+
+    let mut flash = dp.FLASH.constrain();
+    let rcc = dp.RCC.constrain();
+
+    let clocks = rcc.cfgr.freeze(&mut flash.acr);
+
+    let mut afio = dp.AFIO.constrain();
+    let mut gpioa = dp.GPIOA.split();
+    let mut gpioc = dp.GPIOC.split() ;
+
+    let led = gpioc.pc13.into_push_pull_output(&mut gpioc.crh) ;
+
+    // SPI1
+    let sck = gpioa.pa5.into_alternate_push_pull(&mut gpioa.crl);
+    let miso = gpioa.pa6;
+    let mosi = gpioa.pa7.into_alternate_push_pull(&mut gpioa.crl);
+    let cs = gpioa.pa4.into_push_pull_output(&mut gpioa.crl);
+    let gd0 = gpioa.pa8.into_pull_up_input(&mut gpioa.crh);
+
+    let delay = cp.SYST.delay(&clocks) ;
+
+    let spi = Spi::spi1(
+        dp.SPI1,
+        (sck, miso, mosi),
+        &mut afio.mapr,
+        MODE,
+        1.MHz(),
+        clocks,
+    );
+
+    (spi, cs, delay, led, gd0)
 }

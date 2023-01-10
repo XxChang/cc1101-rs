@@ -122,8 +122,8 @@ fn main() -> ! {
 
     loop {
         led.toggle() ;
-        let ashining = b"ashining" ;
-        cc1101.start_transmit(ashining).unwrap() ;
+        let txt = b"ashining" ;
+        cc1101.start_transmit(txt).unwrap() ;
         while !cc1101.check_transmit().unwrap() {
             cc1101.delay_us(1000);
         }
