@@ -8,13 +8,15 @@ use core::fmt::Debug;
 use hal::blocking::spi::{Transfer, Write};
 use hal::blocking::delay::* ;
 use hal::digital::v2::OutputPin;
+use hal::digital::v2::InputPin;
 
 use crate::CC1101;
 
-impl<SPI, CS, Delay, SpiE, GpioE> Channel for CC1101<SPI, CS, Delay>
+impl<SPI, CS, GD0, Delay, SpiE, GpioE> Channel for CC1101<SPI, CS, GD0, Delay>
 where
     SPI: Transfer<u8, Error = SpiE> + Write<u8, Error = SpiE>,
     CS: OutputPin<Error = GpioE>,
+    GD0: InputPin<Error = GpioE>,
     Delay: DelayMs<u32> + DelayUs<u32>,
     SpiE: Debug,
     GpioE: Debug,

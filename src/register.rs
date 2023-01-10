@@ -1,3 +1,5 @@
+#![allow(unused_braces)]
+
 use core::convert::Infallible;
 
 use modular_bitfield::prelude::*;
@@ -71,6 +73,32 @@ impl Register for FifoThr {
 #[bitfield]
 #[derive(Copy, Clone, PartialEq, Debug)]
 #[repr(u8)]
+pub struct Sync1 {
+    pub sync: u8,
+}
+
+impl Register for Sync1 {
+    const ADDRESS: u8 = Registers::SYNC1 as u8 ;
+    type Word = u8 ;
+    type Error = Infallible ;
+}
+
+#[bitfield]
+#[derive(Copy, Clone, PartialEq, Debug)]
+#[repr(u8)]
+pub struct Sync0 {
+    pub sync: u8,
+}
+
+impl Register for Sync0 {
+    const ADDRESS: u8 = Registers::SYNC0 as u8 ;
+    type Word = u8 ;
+    type Error = Infallible ;
+}
+
+#[bitfield]
+#[derive(Copy, Clone, PartialEq, Debug)]
+#[repr(u8)]
 pub struct Pktlen {
     pub packet_length: u8,
 }
@@ -85,7 +113,7 @@ impl Register for Pktlen {
 #[derive(Copy, Clone, PartialEq, Debug)]
 #[repr(u8)]
 pub struct PktCtrl1 {
-    pub adr_chk: B2,
+    pub adr_chk: AddrMode,
     pub append_status: B1,
     pub crc_autoflush: B1,
     #[skip]
@@ -115,6 +143,19 @@ pub struct PktCtrl0 {
 
 impl Register for PktCtrl0 {
     const ADDRESS: u8 = Registers::PKTCTRL0 as u8 ;
+    type Word = u8 ;
+    type Error = Infallible ;
+}
+
+#[bitfield]
+#[derive(Clone, Copy, PartialEq, Debug)]
+#[repr(u8)]
+pub struct Addr {
+    pub device_addr: u8,
+}
+
+impl Register for Addr {
+    const ADDRESS: u8 = Registers::ADDR as u8 ;
     type Word = u8 ;
     type Error = Infallible ;
 }
@@ -296,11 +337,28 @@ impl Register for Deviatn {
 #[bitfield]
 #[derive(Copy, Clone, PartialEq, Debug)]
 #[repr(u8)]
+pub struct Mcsm1 {
+    pub txoff_mode: TxOffMode,
+    pub rxoff_mode: RxOffMode,
+    pub cca_mode: CcaMode,
+    #[skip]
+    __: B2,
+}
+
+impl Register for Mcsm1 {
+    const ADDRESS: u8 = Registers::MCSM1 as u8 ;
+    type Word = u8 ;
+    type Error = Infallible ;
+}
+
+#[bitfield]
+#[derive(Copy, Clone, PartialEq, Debug)]
+#[repr(u8)]
 pub struct Mcsm0 {
     pub xosc_force_on: B1,
     pub pin_ctrl_en: B1,
     pub po_timeout: B2,
-    pub fs_autocal: B2,
+    pub fs_autocal: FsAutoCal,
     #[skip]
     __: B2,
 }
@@ -332,6 +390,111 @@ impl Register for Foccfg {
 #[bitfield]
 #[derive(Copy, Clone, PartialEq, Debug)]
 #[repr(u8)]
+pub struct Worctrl {
+    pub wor_res: B2,
+    #[skip]
+    __: B1,
+    pub rc_cal: B1,
+    pub event1: B3,
+    pub rc_pd: B1,
+}
+
+impl Register for Worctrl {
+    const ADDRESS: u8 = Registers::WORCTRL as u8 ;
+    type Word = u8 ;
+    type Error = Infallible ;
+}
+
+#[bitfield]
+#[derive(Copy, Clone, PartialEq, Debug)]
+#[repr(u8)]
+pub struct Fscal3 {
+    pub fscal3_low: B4,
+    pub chp_curr_cal_en: B2,
+    pub fscal3_high: B2,
+}
+
+impl Register for Fscal3 {
+    const ADDRESS: u8 = Registers::FSCAL3 as u8 ;
+    type Word = u8 ;
+    type Error = Infallible ;
+}
+
+#[bitfield]
+#[derive(Copy, Clone, PartialEq, Debug)]
+#[repr(u8)]
+pub struct Fscal2 {
+    pub fscal2: B5,
+    pub vco_core_h_en: B1,
+    #[skip]
+    __: B2,
+}
+
+impl Register for Fscal2 {
+    const ADDRESS: u8 = Registers::FSCAL2 as u8 ;
+    type Word = u8 ;
+    type Error = Infallible ;
+}
+
+#[bitfield]
+#[derive(Copy, Clone, PartialEq, Debug)]
+#[repr(u8)]
+pub struct Fscal1 {
+    pub fscal1: B6,
+    #[skip]
+    __: B2,
+}
+
+impl Register for Fscal1 {
+    const ADDRESS: u8 = Registers::FSCAL1 as u8 ;
+    type Word = u8 ;
+    type Error = Infallible ;
+}
+
+#[bitfield]
+#[derive(Copy, Clone, PartialEq, Debug)]
+#[repr(u8)]
+pub struct Fscal0 {
+    pub fscal0: B7,
+    #[skip]
+    __: B1,
+}
+
+impl Register for Fscal0 {
+    const ADDRESS: u8 = Registers::FSCAL0 as u8 ;
+    type Word = u8 ;
+    type Error = Infallible ;
+}
+
+#[bitfield]
+#[derive(Copy, Clone, PartialEq, Debug)]
+#[repr(u8)]
+pub struct Test2 {
+    pub test2: u8,
+}
+
+impl Register for Test2 {
+    const ADDRESS: u8 = Registers::TEST2 as u8 ;
+    type Word = u8 ;
+    type Error = Infallible ;
+}
+
+#[bitfield]
+#[derive(Copy, Clone, PartialEq, Debug)]
+#[repr(u8)]
+pub struct Test1 {
+    pub test1: u8,
+}
+
+impl Register for Test1 {
+    const ADDRESS: u8 = Registers::TEST1 as u8 ;
+    type Word = u8 ;
+    type Error = Infallible ;
+}
+
+#[bitfield]
+#[derive(Copy, Clone, PartialEq, Debug)]
+#[repr(u8)]
 pub struct Partnum {
     pub part_no: u8
 }
@@ -351,6 +514,33 @@ pub struct Version {
 
 impl Register for Version {
     const ADDRESS: u8 = Registers::VERSION as u8 | 0x40u8 ;
+    type Word = u8 ;
+    type Error = Infallible ;
+}
+
+#[bitfield]
+#[derive(Copy, Clone, PartialEq, Debug)]
+#[repr(u8)]
+pub struct TxFifo {
+    pub txfifo: u8
+}
+
+impl Register for TxFifo {
+    const ADDRESS: u8 = Registers::TXFIFO as u8 ;
+    type Word = u8 ;
+    type Error = Infallible ;
+}
+
+#[bitfield]
+#[derive(Copy, Clone, PartialEq, Debug)]
+#[repr(u8)]
+pub struct Rxbytes {
+    pub num_rxbytes: B7,
+    pub rxfifo_overflow: B1,
+}
+
+impl Register for Rxbytes {
+    const ADDRESS: u8 = Registers::RXBYTES as u8 | 0x40u8 ;
     type Word = u8 ;
     type Error = Infallible ;
 }
@@ -408,6 +598,8 @@ pub enum Registers {
     /// Chip part number
     PARTNUM     = 0x30,
     VERSION     = 0x31,
+    RXBYTES     = 0x3b,
+    TXFIFO      = 0x3f,
 }
 
 /// GPIO Pin Operation
@@ -513,6 +705,56 @@ pub enum SyncMode {
     AboveThr_15_16 = 5,
     AboveThr_16_16 = 6,
     AboveThr_30_32 = 7,
+}
+
+#[derive(Copy, Clone, PartialEq, Debug, BitfieldSpecifier)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
+#[bits = 2]
+pub enum FsAutoCal {
+    NEVER = 0,
+    FromIdleToActive = 1,
+    FromActiveToIdle = 2,
+    FromActiveToIdle4th = 3,
+}
+
+#[derive(Copy, Clone, PartialEq, Debug, BitfieldSpecifier)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
+#[bits = 2]
+pub enum RxOffMode {
+    IDLE = 0,
+    FSTXON = 1,
+    TX = 2,
+    StayInRx = 3,
+}
+
+#[derive(Copy, Clone, PartialEq, Debug, BitfieldSpecifier)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
+#[bits = 2]
+pub enum TxOffMode {
+    IDLE = 0,
+    FSTXON = 1,
+    StayInTX = 2,
+    RX = 3,
+}
+
+#[derive(Copy, Clone, PartialEq, Debug, BitfieldSpecifier)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
+#[bits = 2]
+pub enum CcaMode {
+    ALWAYS = 0,
+    RSSIThr = 1,
+    ReceivePkt = 2,
+    RSSIThrReceivePkt = 3,
+}
+
+#[derive(Copy, Clone, PartialEq, Debug, BitfieldSpecifier)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
+#[bits = 2]
+pub enum AddrMode {
+    BoardAll = 0,
+    BoardNo = 1,
+    Board0 = 2,
+    Board0And255 = 3,
 }
 
 #[derive(Copy, Clone, PartialEq, Debug, BitfieldSpecifier)]

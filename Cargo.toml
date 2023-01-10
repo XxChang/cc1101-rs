@@ -7,7 +7,7 @@ edition = "2021"
 
 [dependencies]
 radio = "0.11.1"
-embedded-hal = "0.2.7"
+embedded-hal = { version = "0.2.7", features = ["unproven"] }
 modular-bitfield = "0.11.2"
 
 [dev-dependencies]
