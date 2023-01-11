@@ -79,6 +79,7 @@ fn main() -> ! {
     let (spi, cs, delay, mut led, gd0) = setup();
 
     let cfg = cc1101_rs::Config::default() ;
+
     let mut cc1101 = CC1101::new(spi, cs, gd0, delay, &cfg).unwrap() ;
     let (part, version) = cc1101.info().unwrap() ;
 
@@ -122,10 +123,16 @@ fn main() -> ! {
 
     loop {
         led.toggle() ;
-        let txt = b"ashining" ;
+        let txt = b"Aloha" ;
         cc1101.start_transmit(txt).unwrap() ;
+        let mut tx_wait_timeout = 0 ;
         while !cc1101.check_transmit().unwrap() {
             cc1101.delay_us(1000);
+            tx_wait_timeout = tx_wait_timeout+1 ;
+            if tx_wait_timeout > 1000 {
+                cc1101.configure(&cfg).unwrap() ;
+                break;
+            }
         }
         cc1101.delay_us(500000);
     }

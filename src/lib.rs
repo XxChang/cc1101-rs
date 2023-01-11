@@ -87,6 +87,37 @@ impl Default for Deviation {
     }
 }
 
+impl TryFrom<f32> for Deviation {
+    type Error = &'static str;
+    
+    fn try_from(f: f32) -> Result<Self, Self::Error> {
+        let f_tmp = f/( FXOSC as f32 ) ;
+        let mut e = 0 ;
+        let mut find_e = false ;
+        let mut f_in = 0f32 ;
+
+        for t in 0..=7 {
+            let div_d = f32::from_bits( ((1.0f32.to_bits() >> 23) + t - 14 ) << 23 ) ;
+            f_in = f_tmp / div_d ;
+            if f_in < 2.0 && f_in > 1.0 {
+                find_e = true ;
+                e = t ;
+                break;
+            }
+        }
+
+        if !find_e {
+            return Err("Deviation out of range");
+        }
+
+        f_in = f_in * (1i32.rotate_left(3) as f32) - 8f32 ;
+
+        Ok(
+            Deviation { devition_e: e as u8, devition_m: f_in as u8 }
+        )
+    }
+}
+
 #[derive(Clone, PartialEq, Debug)]
 pub struct ModemCfg {
     pub chanbw_e: u8,
