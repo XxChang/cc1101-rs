@@ -36,7 +36,7 @@ where
         };
 
         self.write_brust_register::<TxFifo>(data)?;
-        self.set_state(crate::State::Tx)?;
+        self.set_state(crate::CC1101State::Tx)?;
         Ok(())
     }
 
@@ -55,7 +55,7 @@ where
     GpioE: Debug, 
 {
     fn clear_tx_fifo(&mut self) -> Result<(), Error<SpiE, GpioE>> {
-        self.set_state(crate::State::IDLE)?;
+        self.set_state(crate::CC1101State::IDLE)?;
         self.cmd_strobe(crate::Command::SFTX)?;
         Ok(())
     }

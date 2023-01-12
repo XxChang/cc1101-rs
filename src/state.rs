@@ -3,8 +3,8 @@ use hal::blocking::spi::{Transfer, Write};
 use hal::blocking::delay::* ;
 use hal::digital::v2::OutputPin;
 use hal::digital::v2::InputPin;
-
-use crate::{CC1101, State, Command};
+use crate::CC1101State;
+use crate::{CC1101, Command};
 use crate::Error;
 
 impl<SPI, CS, GD0, Delay, SpiE, GpioE> radio::State for CC1101<SPI, CS, GD0, Delay>
@@ -14,18 +14,18 @@ where
     GD0: InputPin<Error = GpioE>,
     Delay: DelayMs<u32> + DelayUs<u32>,
     SpiE: Debug,
-    GpioE: Debug,   
+    GpioE: Debug,  
 {
     type Error = Error<SpiE, GpioE> ;
-    type State = crate::State ;
+    type State = CC1101State ;
 
     fn set_state(&mut self, state: Self::State) -> Result<(), Self::Error> {
         let command = match state {
-            State::IDLE => Command::SIDEL,
-            State::Tx => {
+            CC1101State::IDLE => Command::SIDEL,
+            CC1101State::Tx => {
                 Command::STX
             },
-            State::Rx => {
+            CC1101State::Rx => {
                 Command::SRX
             },
             _ => return Err(Error::InvalidStateCommand),

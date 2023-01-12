@@ -7,14 +7,14 @@ use hal::blocking::spi::{Transfer, Write};
 use hal::blocking::delay::* ;
 use hal::digital::v2::OutputPin;
 use hal::digital::v2::InputPin;
-use radio::{Registers, Channel};
+use radio::{Registers, Channel, State};
 use register::*;
 
 pub mod transmit;
 pub mod registers;
 pub mod register;
 pub mod channel;
-pub mod state;
+mod state;
 pub mod receive;
 
 pub const FXOSC: u64 = 26_000_000 ;
@@ -250,7 +250,7 @@ impl Default for Config {
 }
 
 #[derive(Clone, Copy, PartialEq, Debug)]
-pub enum State {
+pub enum CC1101State {
     Sleep = 0x00,
     StandbyRc = 0x02,
     StandbyXosc = 0x03,
@@ -260,7 +260,7 @@ pub enum State {
     IDLE = 0x07,
 }
 
-impl radio::RadioState for State {
+impl radio::RadioState for CC1101State {
     fn idle() -> Self {
         Self::IDLE
     }
@@ -313,6 +313,8 @@ where
 
         cc1101.configure(config)?;
 
+        cc1101.set_state(CC1101State::IDLE)?;
+
         Ok(cc1101)
     }
 
@@ -342,6 +344,8 @@ where
     }
 
     pub fn configure(&mut self, config: &Config) -> Result<(), Error<SpiE, GpioE>> {
+
+        // Set GDO0 to signal that sync word has ben sent / received
         self.write_register::<IoCfg0>(IoCfg0::new().with_gdo0_cfg(GpioOutSelect::SyncWordState).with_gdo0_inv(1))?;
         self.set_fifo_thr(config.fifo_thr)?;
         self.set_pkt(&config.pkt_cfg)?;

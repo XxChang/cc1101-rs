@@ -51,7 +51,7 @@ where
     }
 
     fn start_receive(&mut self) -> Result<(), Self::Error> {
-        self.set_state(crate::State::Rx)?;
+        self.set_state(crate::CC1101State::Rx)?;
         Ok(())
     }
 }
@@ -66,7 +66,7 @@ where
     GpioE: Debug, 
 {
     pub fn clear_rx_fifo(&mut self) -> Result<(), Error<SpiE, GpioE>> {
-        self.set_state(crate::State::IDLE)?;
+        self.set_state(crate::CC1101State::IDLE)?;
         self.cmd_strobe(crate::Command::SFRX)?;
         Ok(())
     }
